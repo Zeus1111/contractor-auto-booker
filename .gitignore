@@ -1,0 +1,28 @@
+# Environment variables — never commit
+.env
+*.env.local
+
+# API keys & secrets
+secrets.json
+credentials.json
+api_keys.json
+
+# Build & cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Logs
+*.log
+call_log.csv
+outreach_log.csv
+
+# Generated audio
+calls/*.mp3
+calls/*.wav
+calls/*.mp4
