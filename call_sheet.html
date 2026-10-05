@@ -1,0 +1,511 @@
+<title>Permit Call Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Source+Serif+4:opsz,wght@8..60,400..600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a work-order form. Script column on the left reads top to bottom; saved calls sit in a side rail on wide screens and below on phones. */
+:root {
+  --paper: #f7f8f6;
+  --sheet: #ffffff;
+  --ink: #1d2733;
+  --muted: #5d6874;
+  --rule: #d5dad8;
+  --accent: #c2551b;
+  --accent-soft: #f6e5da;
+  --say: #13324f;
+  --token-bg: #e6edf3;
+  --good: #2e7d4f;
+  --warn: #a8700f;
+  --bad: #b0352b;
+  --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --font-script: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12171c; --sheet: #1a2128; --ink: #e5e9ec; --muted: #9aa5ae; --rule: #2e3943;
+    --accent: #ee8a52; --accent-soft: #3a2619; --say: #cfe2f4; --token-bg: #24323f;
+    --good: #6cc492; --warn: #e3b252; --bad: #f08a80; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12171c; --sheet: #1a2128; --ink: #e5e9ec; --muted: #9aa5ae; --rule: #2e3943;
+  --accent: #ee8a52; --accent-soft: #3a2619; --say: #cfe2f4; --token-bg: #24323f;
+  --good: #6cc492; --warn: #e3b252; --bad: #f08a80; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-script); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 64px; display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1080px) { .wrap { grid-template-columns: minmax(0, 1fr) 320px; padding-inline: 28px; } }
+
+header.top { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; border-bottom: 2px solid var(--ink); padding-bottom: 12px; }
+h1 { font-family: var(--font-display); font-stretch: 80%; font-weight: 800; font-size: clamp(1.8rem, 4vw, 2.5rem); letter-spacing: -0.01em; line-height: 1; margin: 0; text-transform: uppercase; text-wrap: balance; }
+.sub { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.04em; margin-top: 6px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.status { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); min-width: 0; }
+
+button { font-family: var(--font-display); font-weight: 650; font-size: 0.9rem; letter-spacing: 0.02em; border-radius: 4px; border: 1.5px solid var(--ink); background: var(--sheet); color: var(--ink); padding: 8px 14px; cursor: pointer; }
+button:hover { background: var(--token-bg); }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary:hover { filter: brightness(1.06); background: var(--accent); }
+button.ghost { border-color: var(--rule); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, .chip:focus-visible, .call:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+main { min-width: 0; display: grid; gap: 22px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: 18px 20px; }
+.label { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+
+.lead { display: grid; gap: 14px 18px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field input, .field select, .answer textarea, .answer input { font: inherit; color: var(--ink); background: transparent; border: none; border-bottom: 1.5px solid var(--rule); padding: 4px 2px; width: 100%; border-radius: 0; }
+.field input:focus, .field select:focus, .answer textarea:focus, .answer input:focus { border-bottom-color: var(--accent); outline: none; }
+.field select { background: var(--sheet); }
+details.setup { margin-top: 14px; border-top: 1px dashed var(--rule); padding-top: 10px; }
+details.setup summary { cursor: pointer; font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.04em; }
+details.setup .lead { margin-top: 12px; }
+
+.step { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 0 14px; }
+.num { font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: 2rem; line-height: 1; color: var(--accent); text-align: right; padding-top: 2px; font-variant-numeric: tabular-nums; }
+.step h2 { font-family: var(--font-display); font-weight: 750; font-size: 1.15rem; letter-spacing: 0.01em; text-transform: uppercase; margin: 0 0 2px; text-wrap: balance; }
+.why { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); margin: 0 0 12px; max-width: 65ch; }
+.body { display: grid; gap: 12px; min-width: 0; }
+
+.say { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 10px; align-items: start; }
+.say .tag, .do .tag { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; padding-top: 6px; }
+.say .tag { color: var(--accent); font-weight: 500; }
+.say p { margin: 0; font-size: 1.16rem; line-height: 1.55; color: var(--say); max-width: 62ch; }
+.do { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 10px; }
+.do .tag { color: var(--muted); }
+.do p { margin: 0; font-style: italic; color: var(--muted); max-width: 62ch; }
+.tok { background: var(--token-bg); border-radius: 3px; padding: 0 4px; font-weight: 600; }
+.tok.empty { font-family: var(--font-mono); font-size: 0.8em; font-weight: 400; color: var(--muted); }
+
+.q { border-top: 1px solid var(--rule); padding-top: 12px; display: grid; gap: 8px; }
+.q:first-of-type { border-top: none; padding-top: 0; }
+.prods { display: flex; flex-wrap: wrap; gap: 6px 14px; padding-left: 48px; font-family: var(--font-script); font-size: 0.95rem; color: var(--muted); }
+.prods span::before { content: "\201C"; } .prods span::after { content: "\201D"; }
+.prods .label { width: 100%; }
+.answer { padding-left: 48px; display: grid; gap: 6px; }
+.answer textarea { resize: vertical; min-height: 2.4em; line-height: 1.45; font-family: var(--font-script); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-family: var(--font-mono); font-size: 0.75rem; border: 1px solid var(--rule); border-radius: 999px; padding: 3px 10px; background: transparent; color: var(--ink); font-weight: 400; letter-spacing: 0; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+
+.exit { background: var(--accent-soft); border-radius: 6px; padding: 12px 14px; display: grid; gap: 6px; }
+.exit .label { color: var(--accent); }
+.exit p { margin: 0; font-size: 1.05rem; color: var(--say); }
+
+.outcome-row { display: grid; gap: 14px 18px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.bottom-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+aside { min-width: 0; }
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); display: grid; gap: 12px; }
+.rail h3 { font-family: var(--font-display); font-weight: 750; text-transform: uppercase; font-size: 1rem; margin: 0; letter-spacing: 0.02em; }
+.calls { display: grid; gap: 8px; max-height: 70vh; overflow-y: auto; padding-right: 2px; }
+.call { text-align: left; display: grid; gap: 2px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px; font-family: var(--font-script); font-weight: 400; letter-spacing: 0; }
+.call.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.call .who { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; display: flex; justify-content: space-between; gap: 8px; }
+.call .meta { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); overflow-wrap: anywhere; }
+.pill { font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; align-self: start; }
+.pill.booked { color: var(--good); } .pill.callback { color: var(--warn); } .pill.neg { color: var(--bad); } .pill.none { color: var(--muted); }
+.empty-note { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); border: 1px dashed var(--rule); border-radius: 6px; padding: 14px; }
+.confirm { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-family: var(--font-mono); font-size: 0.75rem; }
+@media (prefers-reduced-motion: no-preference) { button, .chip, .call { transition: background-color .15s, border-color .15s; } }
+@media (max-width: 520px) {
+  .step { grid-template-columns: minmax(0, 1fr); }
+  .num { text-align: left; font-size: 1.5rem; }
+  .answer, .prods { padding-left: 0; }
+  .say, .do { grid-template-columns: 32px minmax(0, 1fr); }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Permit Call Sheet</h1>
+      <div class="sub">Read the SAY lines out loud. Type their answers in the boxes. Skip any question they already answered.</div>
+    </div>
+    <div class="actions">
+      <span class="status" id="status">New call</span>
+      <button class="ghost" id="newBtn" type="button">New call</button>
+      <button class="primary" id="saveBtn" type="button">Save call</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="leadLabel">
+      <div class="label" id="leadLabel" style="margin-bottom:10px">Lead from the permit list</div>
+      <div class="lead">
+        <label class="field"><span class="label">Homeowner name</span><input id="l-name" data-k="name" autocomplete="off" placeholder="Sarah Johnson"></label>
+        <label class="field"><span class="label">Phone</span><input id="l-phone" data-k="phone" autocomplete="off" inputmode="tel" placeholder="(303) 555-1234"></label>
+        <label class="field"><span class="label">Address</span><input id="l-address" data-k="address" autocomplete="off" placeholder="1234 Larimer St"></label>
+        <label class="field"><span class="label">Project type</span><input id="l-project" data-k="project" autocomplete="off" placeholder="kitchen remodel"></label>
+        <label class="field"><span class="label">Permit value</span><input id="l-permit" data-k="permit" autocomplete="off" inputmode="decimal" placeholder="$45,000"></label>
+      </div>
+      <details class="setup" id="setup">
+        <summary>Your details and time slots (remembered on this device)</summary>
+        <div class="lead">
+          <label class="field"><span class="label">Your name</span><input id="s-me" data-s="me" autocomplete="off" placeholder="Your first name"></label>
+          <label class="field"><span class="label">Company</span><input id="s-company" data-s="company" autocomplete="off"></label>
+          <label class="field"><span class="label">City</span><input id="s-city" data-s="city" autocomplete="off"></label>
+          <label class="field"><span class="label">First time slot</span><input id="s-dayA" data-s="dayA" autocomplete="off"></label>
+          <label class="field"><span class="label">Second time slot</span><input id="s-dayB" data-s="dayB" autocomplete="off"></label>
+        </div>
+      </details>
+    </section>
+
+    <div id="script" style="display:grid;gap:22px"></div>
+
+    <section class="card step" aria-labelledby="outLabel">
+      <div class="num">✓</div>
+      <div class="body">
+        <h2 id="outLabel">Log the call</h2>
+        <div class="outcome-row">
+          <label class="field"><span class="label">Outcome</span>
+            <select id="o-outcome" data-a="outcome">
+              <option value="">Pick one</option>
+              <option>Booked</option>
+              <option>Call back</option>
+              <option>Not interested</option>
+              <option>No answer</option>
+              <option>Voicemail</option>
+              <option>Wrong number</option>
+              <option>Do not call</option>
+            </select>
+          </label>
+          <label class="field"><span class="label">Walkthrough date</span><input id="o-date" data-a="apptDate" type="date"></label>
+          <label class="field"><span class="label">Walkthrough time</span><input id="o-time" data-a="apptTime" type="time"></label>
+          <label class="field"><span class="label">Call back when</span><input id="o-callback" data-a="callback" autocomplete="off" placeholder="Thu after 5pm"></label>
+        </div>
+        <div class="answer" style="padding-left:0">
+          <span class="label">Notes for the project manager</span>
+          <textarea id="o-notes" data-a="notes" rows="3" placeholder="Anything else they mentioned: gate code, dog, best way to reach them"></textarea>
+        </div>
+        <div class="bottom-actions">
+          <button class="primary" id="saveBtn2" type="button">Save call</button>
+          <button id="copyBtn" type="button">Copy summary</button>
+          <span class="status" id="copyStatus" aria-live="polite"></span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside aria-labelledby="railLabel">
+    <div class="rail">
+      <h3 id="railLabel">Saved calls</h3>
+      <div class="calls" id="calls">
+        <div class="empty-note" id="callsEmpty">Calls you save show up here. Click one to open it again and see their answers.</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- The script, word for word ----------
+  // Token keys: first, name, me, company, project, address, city, permit, dayA, dayB, partner
+  const STEPS = [
+    {
+      title: "Open the call",
+      why: "Confirm you have the right person and ask for two minutes.",
+      items: [
+        { say: "Hi, is this {first}?" },
+        { do: "Wait for a yes." },
+        { say: "Hey {first}, this is {me} with {company}. I'm calling because I saw you just pulled a permit for a {project} over at {address}. Did I catch you at an okay time for two minutes?" },
+        { q: "notGoodTime", label: "If it's a bad time", say: "No problem at all. When's a better time for me to call you back?", input: "line", ph: "Their callback time (also fill in Call back when at the bottom)" }
+      ]
+    },
+    {
+      title: "Set the frame",
+      why: "Jake: tell them what you do, then get permission to ask questions. Wait for the yes before you move on.",
+      items: [
+        { say: "Perfect. So what we do is help homeowners around {city} get projects like yours done right, on time and on budget." },
+        { say: "To make this actually useful for you, can I ask you a few quick questions about the project? Then if it makes sense, I'll get you a free estimate on the calendar. Cool?" },
+        { do: "Wait for a yes." },
+        { exit: "Totally understand, {first}. I'll take you off our list. Have a great day.", note: "If they say they're not interested at any point, say this and end the call. Set the outcome to Not interested or Do not call." }
+      ]
+    },
+    {
+      title: "The problem",
+      why: "Jake: no problem means no sale. If they give a short answer, use one of the follow-ups to get them to open up.",
+      items: [
+        { q: "problem", say: "So what's the biggest thing you're trying to fix or change with this {project}?", prods: ["What do you mean by that?", "How so?", "Could you tell me a bit more about that?", "How's that affecting you day to day?"], ph: "In their words" }
+      ]
+    },
+    {
+      title: "The project",
+      why: "Jake: get the context you need to know if you can help them.",
+      items: [
+        { q: "stage", say: "Has the project already started, or are you still in the planning phase?", chips: ["Still planning", "Already started", "Not sure"], input: "line" },
+        { q: "contractor", say: "Do you have a contractor lined up yet, or are you still getting quotes?", chips: ["Getting quotes", "Has a contractor", "Doing it themselves"], input: "line" },
+        { q: "budget", say: "And roughly what budget are you working with on this?", input: "line", ph: "Permit value: {permit}" }
+      ]
+    },
+    {
+      title: "Urgency",
+      why: "Jake: find out why they want it done now. This heads off \"let me think about it\" later.",
+      items: [
+        { q: "howLong", say: "How long have you been dealing with that?", input: "line" },
+        { q: "whyNow", say: "What changed recently that made you go ahead and pull the permit now?", ph: "The trigger" }
+      ]
+    },
+    {
+      title: "Other estimates",
+      why: "Jake: know what they've already tried so you know what to say differently.",
+      items: [
+        { q: "otherEstimates", say: "Have you gotten any other estimates or talked to anyone else about this so far?", chips: ["Yes", "No"], input: "line", ph: "Who" },
+        { q: "likedDisliked", label: "If yes", say: "How did that go? What did you like about them, and what didn't you like?", ph: "Liked / didn't like" },
+        { label: "If no", say: "Got it, so we'd be one of the first ones out there. Good." }
+      ]
+    },
+    {
+      title: "The end goal",
+      why: "Jake: get them picturing the finished result and why it matters.",
+      items: [
+        { q: "endGoal", say: "Let's say it's all finished and it came out perfect. What does that look like for you?", ph: "What they see" },
+        { q: "whyImportant", say: "Love that. Why is that important to you?" },
+        { q: "doneBy", say: "And when are you hoping to have it done by?", input: "line" }
+      ]
+    },
+    {
+      title: "Who decides",
+      why: "Jake: find out who else is part of the decision so they can be at the walkthrough.",
+      items: [
+        { q: "decision", say: "Is this a decision you'll be making on your own, or is there a spouse or partner who'd want to be part of it?", chips: ["On their own", "With spouse/partner"], input: "line" },
+        { q: "partner", label: "If there's a partner", say: "Makes sense. We'll make sure they can be at the walkthrough too. What's their name?", input: "line", ph: "Partner's name" }
+      ]
+    },
+    {
+      title: "Book the walkthrough",
+      why: "Jake: wrap up discovery, then move to the next step. Offer two times, not an open question.",
+      items: [
+        { say: "Awesome. Based on everything you just told me, I'm confident we can help with this." },
+        { say: "The next step is a free 30-minute walkthrough. One of our project managers comes out, looks at the space, and gives you ballpark numbers and ideas. No obligation. What works better for you, {dayA} or {dayB}?" },
+        { do: "Fill in the walkthrough date and time at the bottom." },
+        { label: "If there's a partner", say: "And will {partner} be able to make that time too?" },
+        { say: "Perfect, you're all set. I'll text you a confirmation right now with your project manager's info. Thanks {first}, talk soon." }
+      ]
+    }
+  ];
+
+  const LEAD_KEYS = ["name", "phone", "address", "project", "permit"];
+  const SETTINGS_DEFAULTS = { me: "", company: "Mannis Home Enhancement", city: "Denver", dayA: "Wednesday afternoon", dayB: "Thursday morning" };
+  const TOKEN_LABELS = { first: "first name", name: "name", me: "your name", company: "company", project: "project", address: "address", city: "city", permit: "not given", dayA: "first slot", dayB: "second slot", partner: "their partner" };
+
+  // ---------- State ----------
+  let settings = Object.assign({}, SETTINGS_DEFAULTS, readLocal("callsheet.settings", {}));
+  let call = blankCall();
+  let dirty = false;
+  let db = null;
+  let calls = [];
+
+  function blankCall() { return { id: null, lead: {}, answers: {}, savedAt: null }; }
+  function readLocal(k, fallback) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+  function writeLocal(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  // ---------- Render the script ----------
+  const scriptEl = document.getElementById("script");
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  function tokenValues() {
+    const name = (call.lead.name || "").trim();
+    return {
+      name, first: name.split(/\s+/)[0] || "",
+      project: (call.lead.project || "").trim(), address: (call.lead.address || "").trim(), permit: (call.lead.permit || "").trim(),
+      me: settings.me.trim(), company: settings.company.trim(), city: settings.city.trim(), dayA: settings.dayA.trim(), dayB: settings.dayB.trim(),
+      partner: (call.answers.partner || "").trim()
+    };
+  }
+  function fill(text) {
+    const v = tokenValues();
+    return esc(text).replace(/\{(\w+)\}/g, (m, k) => v[k] ? '<span class="tok">' + esc(v[k]) + "</span>" : '<span class="tok empty">' + esc(TOKEN_LABELS[k] || k) + "</span>");
+  }
+  function fillPlain(text) { const v = tokenValues(); return text.replace(/\{(\w+)\}/g, (m, k) => v[k] || TOKEN_LABELS[k] || k); }
+
+  function buildScript() {
+    let html = "";
+    STEPS.forEach((step, i) => {
+      html += '<section class="card step"><div class="num">' + (i + 1) + '</div><div class="body"><div><h2>' + esc(step.title) + '</h2><p class="why">' + esc(step.why) + "</p></div>";
+      step.items.forEach(it => {
+        if (it.exit) {
+          html += '<div class="exit"><span class="label">If they\'re not interested</span><p data-t="' + esc(it.exit) + '"></p><span class="why" style="margin:0">' + esc(it.note) + "</span></div>";
+          return;
+        }
+        if (it.q || it.label) html += '<div class="q">';
+        if (it.label) html += '<span class="label">' + esc(it.label) + "</span>";
+        if (it.say) html += '<div class="say"><span class="tag">SAY</span><p data-t="' + esc(it.say) + '"></p></div>';
+        if (it.do) html += '<div class="do"><span class="tag">DO</span><p>' + esc(it.do) + "</p></div>";
+        if (it.prods) html += '<div class="prods"><span class="label">Short answer? Follow up with</span>' + it.prods.map(p => "<span>" + esc(p) + "</span>").join("") + "</div>";
+        if (it.q) {
+          html += '<div class="answer">';
+          if (it.chips) html += '<div class="chips">' + it.chips.map(c => '<button type="button" class="chip" data-chip="' + it.q + '" aria-pressed="false">' + esc(c) + "</button>").join("") + "</div>";
+          const ph = it.ph ? ' data-ph="' + esc(it.ph) + '"' : "";
+          if (it.input === "line") html += '<input id="a-' + it.q + '" data-a="' + it.q + '" autocomplete="off" placeholder="Their answer"' + ph + ">";
+          else html += '<textarea id="a-' + it.q + '" data-a="' + it.q + '" rows="2" placeholder="Their answer"' + ph + "></textarea>";
+          html += "</div>";
+        }
+        if (it.q || it.label) html += "</div>";
+      });
+      html += "</div></section>";
+    });
+    scriptEl.innerHTML = html;
+  }
+
+  function refreshText() {
+    document.querySelectorAll("[data-t]").forEach(el => { el.innerHTML = fill(el.getAttribute("data-t")); });
+    document.querySelectorAll("[data-ph]").forEach(el => { el.placeholder = fillPlain(el.getAttribute("data-ph")); });
+    document.querySelectorAll("[data-chip]").forEach(b => {
+      const v = (call.answers[b.getAttribute("data-chip")] || "");
+      b.setAttribute("aria-pressed", v.toLowerCase().startsWith(b.textContent.toLowerCase()) ? "true" : "false");
+    });
+  }
+
+  function loadIntoForm() {
+    document.querySelectorAll("[data-k]").forEach(el => { el.value = call.lead[el.dataset.k] || ""; });
+    document.querySelectorAll("[data-a]").forEach(el => { el.value = call.answers[el.dataset.a] || ""; });
+    document.querySelectorAll("[data-s]").forEach(el => { el.value = settings[el.dataset.s] || ""; });
+    refreshText();
+    renderCalls();
+  }
+
+  function setStatus(t) { document.getElementById("status").textContent = t; }
+  function markDirty() {
+    dirty = true;
+    setStatus(call.savedAt ? "Unsaved changes" : "Not saved yet");
+    writeLocal("callsheet.draft", call);
+  }
+
+  // ---------- Inputs ----------
+  document.addEventListener("input", e => {
+    const el = e.target;
+    if (el.dataset.k) { call.lead[el.dataset.k] = el.value; markDirty(); refreshText(); }
+    else if (el.dataset.a) { call.answers[el.dataset.a] = el.value; markDirty(); refreshText(); }
+    else if (el.dataset.s) { settings[el.dataset.s] = el.value; writeLocal("callsheet.settings", settings); refreshText(); }
+  });
+  document.addEventListener("change", e => {
+    if (e.target.id === "o-outcome") { call.answers.outcome = e.target.value; markDirty(); }
+  });
+  scriptEl.addEventListener("click", e => {
+    const b = e.target.closest("[data-chip]");
+    if (!b) return;
+    const key = b.getAttribute("data-chip");
+    const input = document.getElementById("a-" + key);
+    const cur = (input.value || "");
+    const label = b.textContent;
+    // Replace a previously chosen chip label at the start, keep any detail typed after it.
+    const chips = Array.from(scriptEl.querySelectorAll('[data-chip="' + key + '"]')).map(c => c.textContent);
+    let rest = cur;
+    for (const c of chips) { if (rest.toLowerCase().startsWith(c.toLowerCase())) { rest = rest.slice(c.length).replace(/^\s*[-–—:,]\s*/, ""); break; } }
+    input.value = rest ? label + " - " + rest : label;
+    call.answers[key] = input.value;
+    markDirty(); refreshText(); input.focus();
+  });
+
+  // ---------- Summary ----------
+  function summary(c) {
+    const a = c.answers, l = c.lead;
+    const line = (k, v) => v && String(v).trim() ? k + ": " + String(v).trim() : null;
+    return [
+      line("Homeowner", l.name), line("Phone", l.phone), line("Address", l.address), line("Project", l.project), line("Permit value", l.permit),
+      line("Outcome", a.outcome), line("Walkthrough", [a.apptDate, a.apptTime].filter(Boolean).join(" ")), line("Call back", a.callback || a.notGoodTime),
+      "", "Discovery",
+      line("Problem", a.problem), line("Stage", a.stage), line("Contractor", a.contractor), line("Budget", a.budget),
+      line("Dealing with it for", a.howLong), line("Why now", a.whyNow),
+      line("Other estimates", a.otherEstimates), line("Liked / didn't like", a.likedDisliked),
+      line("End goal", a.endGoal), line("Why it matters", a.whyImportant), line("Done by", a.doneBy),
+      line("Decision", a.decision), line("Partner", a.partner), line("Notes", a.notes)
+    ].filter(x => x !== null).join("\n");
+  }
+  document.getElementById("copyBtn").addEventListener("click", () => {
+    const text = summary(call), out = document.getElementById("copyStatus");
+    const fallback = () => { out.textContent = "Copy blocked here. Select the notes and copy them by hand."; };
+    try {
+      navigator.clipboard.writeText(text).then(() => { out.textContent = "Copied. Paste it into the calendar invite."; }, fallback);
+    } catch (e) { fallback(); }
+  });
+
+  // ---------- Saving ----------
+  async function save() {
+    if (!db) { setStatus("Saving needs the page open on claude.ai. Draft kept on this device."); return; }
+    if (!call.id) call.id = "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const body = { lead: Object.assign({}, call.lead), answers: Object.assign({}, call.answers), savedAt: new Date().toISOString() };
+    if (!call.createdAt) call.createdAt = body.savedAt;
+    body.createdAt = call.createdAt;
+    setStatus("Saving…");
+    try {
+      await db.collection("calls").doc(call.id).set(body);
+      call.savedAt = body.savedAt; dirty = false;
+      setStatus("Saved " + new Date(body.savedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
+      writeLocal("callsheet.draft", call);
+    } catch (e) {
+      const msg = e && e.code === "quota_exceeded" ? "Storage is full. Delete old calls, then save again." :
+                  e && e.code === "invalid_argument" ? "You don't have permission to save calls on this page." :
+                  "Couldn't save. Try again in a moment.";
+      setStatus(msg);
+    }
+  }
+  document.getElementById("saveBtn").addEventListener("click", save);
+  document.getElementById("saveBtn2").addEventListener("click", save);
+
+  document.getElementById("newBtn").addEventListener("click", () => {
+    call = blankCall(); dirty = false; writeLocal("callsheet.draft", call);
+    loadIntoForm(); setStatus("New call");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.getElementById("l-name").focus();
+  });
+
+  // ---------- Saved calls list ----------
+  function pillClass(o) {
+    if (o === "Booked") return "booked";
+    if (o === "Call back") return "callback";
+    if (o === "Not interested" || o === "Do not call" || o === "Wrong number") return "neg";
+    return "none";
+  }
+  function renderCalls() {
+    const box = document.getElementById("calls");
+    if (!calls.length) {
+      box.innerHTML = '<div class="empty-note">' + (db ? "Calls you save show up here. Click one to open it again and see their answers." : "Saved calls appear here when this page is opened on claude.ai.") + "</div>";
+      return;
+    }
+    box.innerHTML = calls.map(c => {
+      const l = c.lead || {}, a = c.answers || {};
+      const when = c.savedAt ? new Date(c.savedAt).toLocaleDateString([], { month: "short", day: "numeric" }) : "";
+      return '<button type="button" class="call' + (c.id === call.id ? " active" : "") + '" data-id="' + esc(c.id) + '">' +
+        '<span class="who"><span>' + esc(l.name || "No name") + '</span><span class="pill ' + pillClass(a.outcome) + '">' + esc(a.outcome || "Open") + "</span></span>" +
+        '<span class="meta">' + esc([l.project, when].filter(Boolean).join(" · ")) + "</span></button>";
+    }).join("");
+  }
+  document.getElementById("calls").addEventListener("click", e => {
+    const b = e.target.closest(".call");
+    if (!b) return;
+    const found = calls.find(c => c.id === b.dataset.id);
+    if (!found) return;
+    call = { id: found.id, lead: Object.assign({}, found.lead), answers: Object.assign({}, found.answers), savedAt: found.savedAt, createdAt: found.createdAt };
+    dirty = false; writeLocal("callsheet.draft", call);
+    loadIntoForm();
+    setStatus("Opened call with " + (call.lead.name || "no name"));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // ---------- Boot ----------
+  buildScript();
+  const draft = readLocal("callsheet.draft", null);
+  if (draft && draft.lead) { call = Object.assign(blankCall(), draft); if (call.savedAt) setStatus("Saved"); else if (Object.keys(call.lead).length) setStatus("Not saved yet"); }
+  if (!settings.me) document.getElementById("setup").open = true;
+  loadIntoForm();
+
+  if (window.claude && typeof window.claude.use === "function") {
+    window.claude.use("db").then(ns => {
+      if (!ns) { renderCalls(); return; }
+      db = ns;
+      renderCalls();
+      db.collection("calls").orderBy("savedAt", "desc").limit(300).onSnapshot(snap => {
+        calls = snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
+        renderCalls();
+      }, () => { renderCalls(); });
+    }, () => renderCalls());
+  }
+})();
+</script>
