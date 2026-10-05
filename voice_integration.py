@@ -29,14 +29,49 @@ CALL_SCRIPT = """
 Hey, this is {caller_name} from {company_name}. Am I speaking with {homeowner_name}?
 
 Great. I'm reaching out because we saw you just pulled a permit for {project_type} at {address}.
+We help homeowners around {city} get projects like that done right, on time and on budget.
 
-Did that project just start, or are you still in the planning phase?
+So I can make this actually useful for you, mind if I ask a couple quick questions about the project?
+Then if it makes sense, I can get you a free estimate. Cool?
 
-[Listen — pause 3 seconds]
+[Wait for a yes. If they say no or not interested, thank them and end the call.]
 
-Perfect. We do {project_type} all over {city} and we're booking estimates for the next two weeks. I can have one of our project managers stop by for a free 30-minute walkthrough — no obligation, just ballpark numbers and ideas.
+-- DISCOVERY (from Jake's sales script) --
+Ask questions to get the ANSWERS, not just because they're on the script.
+If one answer covers the next few questions, skip those questions.
 
-What works better for you — {day_a} afternoon or {day_b} morning?
+1. The problem
+   "What's the biggest thing you're trying to fix or change with this {project_type}?"
+   If the answer is vague: "What do you mean by that?" / "How so?" / "Could you expand on that?"
+
+2. Context on the project
+   "Did that project just start, or are you still in the planning phase?"
+   "Do you have a contractor lined up yet, or are you still shopping around?"
+   "Roughly what budget are you working with?"
+
+3. Urgency
+   "How long have you been dealing with that?"
+   "What changed recently that made you pull the permit now?"
+
+4. Prior solutions
+   "Have you gotten any other estimates or worked with anyone on this so far?"
+   If yes: "How did that go? What did you like about it, and what didn't you like?"
+
+5. End goal
+   "Picture it finished. What does the ideal result look like for you?"
+   "When would you like it done by?"
+
+6. Who decides
+   "Is this a decision you'll make yourself, or is there a spouse or partner who should be at the walkthrough too?"
+
+[Listen to every answer. Note it for the project manager.]
+
+-- TRANSITION AND BOOKING --
+Awesome. Based on what you told me, I think we can help with that.
+I can have one of our project managers stop by for a free 30-minute walkthrough. No obligation, just ballpark numbers and ideas for {project_type}.
+
+What works better for you, {day_a} afternoon or {day_b} morning?
+[If a spouse or partner is part of the decision, pick a time when they can be there too.]
 
 [Book the appointment]
 
