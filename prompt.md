@@ -44,19 +44,30 @@ For each row in the CSV, use ElevenLabs to place an outbound call with this scri
 
 "Hey, this is {your_name} from {your_company}. Am I speaking with [homeowner_name]?
 
-Great. I'm reaching out because we saw you just pulled a permit for [project_type] at [address].
+Great. I'm reaching out because we saw you just pulled a permit for [project_type] at [address]. We help homeowners around {city} get projects like that done right, on time and on budget.
 
-Did that project just start, or are you still in the planning phase?
+So I can make this actually useful for you, mind if I ask a couple quick questions about the project? Then if it makes sense, I can get you a free estimate. Cool?"
 
-[Listen to response]
+[Wait for a yes. If they say no, thank them and end the call.]
 
-Perfect. We do [project_type] all over {city} and we're booking estimates for [next two weeks]. I can have one of our project managers stop by for a free 30-minute walkthrough — no obligation, just ballpark numbers and ideas.
+### Discovery questions (from Jake's sales script)
+Ask these to get the ANSWERS, not just because they're on the script. If one answer covers later questions, skip those.
 
-What works better for you — [day] afternoon or [day] morning?
+1. **The problem**: "What's the biggest thing you're trying to fix or change with this [project_type]?" If vague, follow up: "What do you mean by that?" / "How so?" / "Could you expand on that?"
+2. **Context on the project**: "Did that project just start, or are you still in the planning phase?" / "Do you have a contractor lined up yet, or are you still shopping around?" / "Roughly what budget are you working with?"
+3. **Urgency**: "How long have you been dealing with that?" / "What changed recently that made you pull the permit now?"
+4. **Prior solutions**: "Have you gotten any other estimates or worked with anyone on this so far?" If yes: "How did that go? What did you like about it, and what didn't you like?"
+5. **End goal**: "Picture it finished. What does the ideal result look like for you?" / "When would you like it done by?"
+6. **Who decides**: "Is this a decision you'll make yourself, or is there a spouse or partner who should be at the walkthrough too?"
 
-[Book the appointment on Google Calendar]
+### Transition and booking
+"Awesome. Based on what you told me, I think we can help with that. I can have one of our project managers stop by for a free 30-minute walkthrough. No obligation, just ballpark numbers and ideas.
 
-Awesome. I'll text you a confirmation right now with [project_manager]'s contact info. Looking forward to it.
+What works better for you, [day] afternoon or [day] morning?"
+
+[If a spouse or partner is part of the decision, pick a time when they can be there too. Book the appointment on Google Calendar.]
+
+"Awesome. I'll text you a confirmation right now with [project_manager]'s contact info. Looking forward to it.
 
 Have a great day."
 
@@ -65,6 +76,7 @@ Create a Google Calendar event titled "{your_company} - Estimate - [homeowner_na
 Location: [address]
 Duration: 30 minutes
 Description: Project type: [project_type]. Permit value: $[value]. Lead source: building permits.
+Discovery notes: problem, timeline, budget, other estimates, desired result, decision makers (from the call).
 
 Then send a Twilio SMS:
 "Hi [homeowner_name], this is {your_name} from {your_company}. Confirming your free estimate on [date] at [time]. Your project manager is [name], [phone]. Reply STOP to opt out."
@@ -76,6 +88,7 @@ For each completed call, log:
 - Call duration
 - Outcome (booked / not interested / no answer / wrong number / voicemail)
 - Booked date/time if applicable
+- Discovery answers (problem, timeline, budget, other estimates, end goal, decision makers)
 - Project details
 
 Save to a Google Sheet titled "{your_company} - AI Lead Pipeline"
